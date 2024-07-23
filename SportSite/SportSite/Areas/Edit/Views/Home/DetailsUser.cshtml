@@ -1,0 +1,56 @@
+﻿@using SportSite
+@using SportSite.Models
+@addTagHelper *, SportSite
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using SportSite.Models.Db
+
+@model SportSite.Models.Db.User
+@{
+    ViewData["Title"] = "DetailsUser";
+}
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="row overflow-hidden">
+        <dt class = "col-sm-6">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-6">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-6">
+            @Html.DisplayNameFor(model => model.Surname)
+        </dt>
+        <dd class = "col-sm-6">
+            @Html.DisplayFor(model => model.Surname)
+        </dd>
+        <dt class = "col-sm-6">
+            @Html.DisplayNameFor(model => model.Age)
+        </dt>
+        <dd class = "col-sm-6">
+            @Html.DisplayFor(model => model.Age)
+        </dd>
+        <dt class = "col-sm-6">
+            @Html.DisplayNameFor(model => model.Tel)
+        </dt>
+        <dd class = "col-sm-6">
+            @Html.DisplayFor(model => model.Tel)
+        </dd>
+        <dt class="col-sm-6 overflow-hidden">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-6">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class = "col-sm-6">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class = "col-sm-6">
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-warning" asp-action="Edit">Edit</a> |
+    <a class="btn btn-success" asp-action="EditPassword">Edit Password</a> 
+</div>

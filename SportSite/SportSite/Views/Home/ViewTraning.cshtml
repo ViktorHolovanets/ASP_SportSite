@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Training>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-3 bg-light text-black p-2">
+            @item.training<hr />
+            @foreach (var day in item.dayofWeeks)
+            {
+                <p>@day.dayofWeek @day.Time</p>
+            }
+            @if (User.IsInRole("client")&&ViewBag.Add)
+            {
+                <input type="button" class="btn btn-outline-danger" value="Add" data-url='@Url.Action("AddClientTraining", new{id=@item.Id})'onclick="AddTraining(event)"/>
+
+            }
+            else if (User.IsInRole("client") && !ViewBag.Add)
+            {
+                <a class="btn btn-outline-warning" href="#" data-url='@Url.Action("DeleteClientTraining", new{id=@item.Id})' onclick="AddTraining(event)">Delete</a>
+            }
+        </div>
+    }
+</div>

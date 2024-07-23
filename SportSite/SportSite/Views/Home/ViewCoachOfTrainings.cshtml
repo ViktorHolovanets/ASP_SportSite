@@ -1,0 +1,46 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Coach>
+<div class="row">
+    <div class="col-3 bg">
+        @foreach (var item in Model)
+        {
+            <button data-url='@Url.Action("ViewTraning", new{id=item.Id})' class="btn btn-outline-success text-info font-weight-bold btn-ajax w-100 my-2" title="@item.Details">@item.Account?.Client?.Name @item.Account?.Client?.Surname</button>
+        }
+    </div>
+    <div class="col-9">
+        <div id="result">
+
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+     
+        $('.btn-ajax').on('click', function() {
+            console.log($(this).data("url"))
+            GetList($(this).data("url"));
+        });
+        function GetList(url) {
+            $.ajax({
+                type: "Get",
+                url: url,
+                success: function(result) {
+                    $('#result').html(result)
+                    console.log(result);
+                }
+            })
+        }
+        function AddTraining(e) {
+            let btn = e.target
+            let url = btn.dataset.url;
+            btn.dataset.url = "";
+            if (url != "")
+                $.ajax({
+                    type: "Get",
+                    url: url
+                })
+        }
+    </script>
+}

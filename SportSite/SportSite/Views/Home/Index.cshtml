@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model IEnumerable<Services>
+@if (ViewBag.Message != null)
+{
+    <script>
+        window.onload = function() {
+            alert("@ViewBag.message");
+        };
+    </script>
+}
+<div>
+    <h1 class="title">Sport is a lifestyle</h1>
+</div>
+<div class="services">
+    <h2 class="text-center text-danger">SERVICES</h2>
+    <div>
+        @await Html.PartialAsync("ViewServices", Model)
+    </div>
+</div>

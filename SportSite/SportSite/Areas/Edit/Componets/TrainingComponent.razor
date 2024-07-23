@@ -1,0 +1,28 @@
+﻿@using SportSite.Models.Db
+@using Microsoft.AspNetCore.Components
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@using System.IO
+<div class="col-3 bg-light text-black p-2 m-2">
+    @item.training<hr />
+    @foreach (var day in item.dayofWeeks)
+    {
+        <p>@day.dayofWeek @day.Time</p>
+    }
+    <button class="btn btn-outline-danger" @onclick="@(()=>OnClick())">Del</button>
+</div>
+@code {
+    [Parameter]
+    public Training item { get; set; }
+    [Parameter]
+    public EventCallback<Guid> OnCallback { get; set; }
+    void OnClick()
+    {
+        OnCallback.InvokeAsync(item.Id);
+    }
+}

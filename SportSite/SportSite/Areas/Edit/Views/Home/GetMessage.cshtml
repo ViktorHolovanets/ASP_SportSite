@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Message>
+@{
+    int n = 0;
+}
+<h2 class="text-black">Messages</h2>
+<hr/>
+<div class="accordion accordion-flush text-black" id="accordionFlushExample">
+    @foreach (var item in Model)
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-heading-@n">
+                <button class="accordion-button collapsed @(item.IsRead?"bg-white":"bg-secondary") btn-read-message" 
+                onclick="ClickMessage(event)"
+                data-url='@(item.IsRead?"":@Url.Action("ReadMessage", new{id=item.Id}))' type="button" 
+                data-bs-toggle="collapse" data-bs-target="#flush-collapse-@n" aria-expanded="false" aria-controls="flush-collapse-@n">
+                    @item.Name
+                </button>
+            </h2>
+            <div id="flush-collapse-@n" class="accordion-collapse collapse" aria-labelledby="flush-heading-@n" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    <p>Tel: @item.Tel</p>
+                    <p>@item.Comments</p>
+                </div>
+            </div>
+        </div>
+        n++;
+    }
+</div>

@@ -1,0 +1,80 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using SportSite.Models.Db
+@using Microsoft.AspNetCore.Components
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@using System.IO
+@inject HttpClient Http
+@foreach (var item in services)
+{
+    j = 0;
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-heading-@n">
+            <button class="accordion-button collapsed border border-info rounded-top btn-read-message box-shadow"
+                onclick="ClickMessage(event)"
+                type="button"
+                data-bs-toggle="collapse" data-bs-target="#flush-collapse-@n" aria-expanded="false" aria-controls="flush-collapse-@n">
+                @item.Name
+            </button>
+        </h2>
+        <div id="flush-collapse-@n" class="accordion-collapse collapse" aria-labelledby="flush-heading-@n" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+                @foreach (var coach in GetCoaches(item.Id))
+                {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading-@coach.Id-@j">
+                            <button class="accordion-button collapsed bg-white btn-read-message"
+                            onclick="ClickMessage(event)"
+                            type="button"
+                            data-bs-toggle="collapse" data-bs-target="#flush-collapse-@coach.Id-@j" aria-expanded="false" aria-controls="flush-collapse-@coach.Id-@j">
+                                @coach.Account.Client.Name @coach.Account.Client.Surname
+                            </button>
+                        </h2>
+                        <div id="flush-collapse-@coach.Id-@j" class="accordion-collapse collapse" aria-labelledby="flush-heading-@coach.Id-@j" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <TrainingsComponent training="@GetTraining(coach.Id)" OnClickCallback="@DelTraining"></TrainingsComponent>
+                            </div>
+                        </div>
+                    </div>
+                    j++;
+                }
+            </div>
+        </div>
+    </div>
+    n++;
+}
+@code {
+    [Inject]
+    public Db? Context { get; set; }
+    int n = 0;
+    int j = 0;
+    public IEnumerable<Coach> GetCoaches(Guid id)
+    {
+        return Context.Coaches.Include(c=>c.Account.Client).Where(c => c.typeSports.Id == id).ToList();
+    }
+    public List<Training> GetTraining(Guid id)
+    {
+        return Context.Trainings.Include(tr => tr.dayofWeeks).Where(tr => tr.coach.Id == id).ToList();
+    }
+    List<Services> services;
+    private void DelTraining(Guid id)
+    {
+        var tr = Context.Trainings.FirstOrDefault(t => t.Id == id);
+        if(tr!=null)
+        {
+            Context.Trainings.Remove(tr);
+            Context.SaveChanges();
+        }
+        
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        services = Context.Services.Where(s => s.IsTypeSport).ToList();
+         //training = await Http.GetFromJsonAsync<List<Services>>("/api/Trainings/Index");
+    }
+}

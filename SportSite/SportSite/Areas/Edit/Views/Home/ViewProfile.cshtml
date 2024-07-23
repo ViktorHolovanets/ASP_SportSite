@@ -1,0 +1,169 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model User
+@if (User.IsInRole("manager") || User.IsInRole("admin"))
+{
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-transparent border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <div class="navbar-collapse collapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item m-1">
+                        <input type="button" class="btn btn-primary text-white font-weight-bold font-italic" id="get-clients" value="Clients" />
+                    </li>
+                    <li class="nav-item m-1">
+                        <input type="button" class="btn btn-primary text-white font-weight-bold font-italic" id="get-coaches" value="Coaches" />
+                    </li>
+                    <li class="nav-item m-1">
+                        <input type="button" class="btn btn-primary text-white font-weight-bold font-italic" id="get-manager" value="Managers" />
+                    </li>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li class="nav-item m-1">
+                            <input type="button" class="btn btn-primary text-white font-weight-bold font-italic" id="get-admin" value="Admins" />
+                        </li>
+                    }
+                    <li class="nav-item m-1">
+                        <input type="button" class="btn btn-primary text-white font-weight-bold font-italic" id="get-code" value="View Code" />
+                    </li>
+                    <li class="nav-item m-1">
+                        <button type="button" class="btn btn-primary position-relative" id="get-message">
+                            Message
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="num-message">
+                                <span id="num">@ViewBag.UnreadMessage</span>
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </button>
+                    </li>
+                    <li class="nav-item m-1">
+                        <a class="btn btn-primary text-white font-weight-bold font-italic" asp-action="CreateTraining">Create training</a>
+                    </li>
+                    <li class="nav-item m-1">
+                        <a class="btn btn-primary text-white font-weight-bold font-italic" asp-action="ViewTrainings">Trainings</a>
+                    </li>
+                    <li class="nav-item m-1">
+                        <a class="btn btn-primary text-white font-weight-bold font-italic" asp-action="CreateManager">Create Manager</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+}
+
+<div class="row">
+    <div class="col-3 bg-secondary">
+        @await Html.PartialAsync("DetailsUser", Model)
+    </div>
+    <div class="col-9">
+        <div id="res" class="bg-white">
+            @if (User.IsInRole("client"))
+            {
+                { await Html.RenderPartialAsync("ViewProfileClient"); }
+            }
+            else if (User.IsInRole("coach"))
+            {
+                { await Html.RenderPartialAsync("ViewProfileClient"); }
+            }
+        </div>
+    </div>
+</div>
+@section Scripts{
+    @if (User.IsInRole("client"))
+    {
+        <script>
+            $(() => {
+                $.ajax({
+                    type: "Get",
+                    url: '@Url.Action("ViewClientTraining", new{IsView=false})',
+                    success: function (result) {
+                        $('#result').html(result);
+                    }
+                });
+            });
+        </script>
+    }
+    else if (User.IsInRole("coach"))
+    {
+        <script>
+            $(() => {
+                $.ajax({
+                    type: "Get",
+                    url: '@Url.Action("ProfileCoach")',
+                    success: function (result) {
+                        $('#result').html(result)
+                        $('.trainings').on('click', function () {
+                            $(this).find('.view-clients').toggleClass('d-none');
+                            $(this).find('.view-traing').toggleClass('d-none');
+                        })
+                    }
+                });
+            });
+        </script>
+    }
+    <script>
+
+        $('#get-clients').on('click', function () {
+            GetList("@Url.Action("ViewUsers")");
+        });
+        $('#get-coaches').on('click', function () {
+            GetList("@Url.Action("ViewUsers", new{role=Role.coach})");
+        });
+        $('#get-manager').on('click', function () {
+            GetList("@Url.Action("ViewUsers", new{role=Role.manager})");
+        });
+        $('#get-admin').on('click', function () {
+            GetList("@Url.Action("ViewUsers", new{role=Role.admin})");
+        });
+        $('#get-code').on('click', function () {
+            GetList("@Url.Action("ViewCode")");
+        });
+
+        $('#get-message').on('click', function () {
+            GetList("@Url.Action("GetMessage")");
+        });
+        function GetList(url) {
+            $.ajax({
+                type: "Get",
+                url: url,
+                success: function (result) {
+                    $('#res').html(result)
+                    console.log(result);
+                }
+            })
+        }
+        function ClickMessage(e) {
+            let btn = e.target
+            let url = btn.dataset.url;
+            btn.dataset.url = "";
+            btn.classList.remove("bg-secondary")
+            console.log(url);
+            if (url != "")
+                $.ajax({
+                    type: "Get",
+                    url: url,
+                    success: function (result) {
+                        $('#num-message').html(result)
+                    }
+                })
+        }
+        function AddTraining(e) {
+            let btn = e.target
+            let url = btn.dataset.url;
+            btn.dataset.url = "";
+            if (url != "")
+                $.ajax({
+                    type: "Get",
+                    url: url,
+                    success: function (result) {
+                        $('#result').html(result)
+                    }
+                })
+        }
+        function DeleteCode(e) {
+            let btn = e.target
+            let url = btn.dataset.url;
+            if (url != "")
+                GetList(url);
+        }
+    </script>
+}

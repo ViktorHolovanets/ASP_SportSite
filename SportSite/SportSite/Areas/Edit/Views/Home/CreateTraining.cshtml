@@ -1,0 +1,58 @@
+﻿@using SportSite.Areas.Edit.ViewModels
+
+@model ViewCreateTraining
+<h4>Training</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateTraining" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Type Training</label>
+                <select asp-for="typeTraining" asp-items=" Html.GetEnumSelectList(typeof(TypeTraining))" class="form-control" id="typeTraining"></select>
+            </div>
+            <div class="form-group" id="clients" style="display:none">
+                <label class="control-label">Clients</label>
+                <select asp-for="IdClient" asp-items="ViewBag.Clients" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Days</label>
+                <select asp-for="dayofWeeks" asp-items=" Html.GetEnumSelectList(typeof(DayofWeek))" class="form-control form-select" multiple></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Time</label>
+                <input asp-for="Time" type="time" class="form-control" id="time" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Coaches</label>
+                <select asp-for="IdCoach" asp-items="ViewBag.Coaches" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary mt-2" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts{
+    <script>
+        $(() => {
+            let now = new Date();
+            let time = `${now.getHours()}:${now.getMinutes()}`;
+            $('#time').val(time);
+            $('#typeTraining').on('change', function () {
+                if (this.value == 0)
+                {
+                    $('#clients').fadeOut();
+                }
+                else if(this.value == 1)
+                {
+                    $('#clients').fadeIn();
+                }
+            });
+        })
+    </script>
+}

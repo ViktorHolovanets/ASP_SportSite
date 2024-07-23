@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SportSite</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SportSite.styles.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap" rel="stylesheet">
+    <base href="~/" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-transparent border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand text-danger" asp-area="" asp-controller="Home" asp-action="Index">
+                    SportSite <br />
+                    <img src="~/Images/brain-7420599__340.webp" class="icon" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon bg-light"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between ">
+                    <ul class="navbar-nav flex-grow-1 justify-content-end">
+                        <li class="nav-item m-1">
+                            <a class="nav-link text-info font-weight-bold font-italic" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item m-1">
+                            <a class="nav-link text-info font-weight-bold font-italic " href="#footer">Contact</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form asp-action="Logout" asp-area="" asp-controller="Home" class=" text-info font-weight-bold font-italic">
+                                    <input type="submit" value="Exit" class="btn btn-outline-danger" />
+                                </form>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a id="user" class="nav-link text-info font-weight-bold font-italic" href="/Edit/Home/ViewProfile" onclick="return @User.Identity?.IsAuthenticated.ToString().ToLower()">
+                                <img src="~/Images/user.ico" id="profile" />
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-xl container-sm-full min-vh-100">
+        <main role="main" class="pb-3">
+            <div id="modal-window">
+                <div id="details" class=" col-12 col-sm-8 col-dm-8 col-lg-5 col-xl-5">
+                    <a href="#" id="close">❌</a>
+                    <div id="login-registration">
+                        <div class="row d-flex flex-column align-items-center">
+                            <a href="#" class="btn btn-info show-enter col-6 text-center rounded mb-3 text-white fo">Enter</a>
+                            <div class="dropdown mt-3 text-center">
+                                <a class="btn btn-primary col-6  text-center rounded text-white dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown">
+                                    Registration
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <a class="dropdown-item" asp-action="CreateAccount" asp-controller="Home">Client</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-action="CreateAccountCoach" asp-controller="Home">Coach</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="enter">
+                        <vc:enter-user />
+                    </div>
+                </div>
+            </div>
+            @RenderBody()
+            @if (!User.Identity.IsAuthenticated || User.IsInRole("client"))
+            {
+                <vc:call-window></vc:call-window>
+                <div class="position-fixed call-block" style="z-index:9999;">
+                    <span class="position-fixed call btn rounded-circle" id="call">📞</span>
+                    <span class="position-fixed btn call-border"></span>
+                </div>
+            }
+
+        </main>
+    </div>
+
+    <footer id="footer" class="border-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-4 text-center">
+                    <h2>
+                        Telephones:
+                    </h2>
+                    <p>Telephone 1</p>
+                    <p>Telephone 2</p>
+                    <p>Telephone 3</p>
+                </div>
+                <div class="col-4 text-center">
+                    <h2>
+                        Address:
+                    </h2>
+                    <p>Address 1</p>
+                    <p>Address 2</p>
+                    <p>Address 3</p>
+                </div>
+                <div class="col-4 ">
+                    <h2>
+                        Site:
+                    </h2>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/message")
+            .build();
+        // receiving a message from the server
+        hubConnection.on('Receive', function (message) {
+            let num = document.getElementById('num-message');
+            if (num != null)
+                num.innerHTML = `${message.countMessage}`;
+            let messages = document.getElementById('accordionFlushExample');
+            if (messages != null) {
+                let countmessage = messages.children.length;
+                if (countmessage) {
+                    let text = `
+                                        <div class="accordion-item">
+                                                <h2 class="accordion-header" id="flush-heading-${countmessage}">
+                                                <button class="accordion-button collapsed bg-secondary btn-read-message"
+                                                    onclick="ClickMessage(event)"
+                                                    data-url='/Edit/Home/ReadMessage/${message.message.id}' type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#flush-collapse-${countmessage}" aria-expanded="false" aria-controls="flush-collapse-${countmessage}">
+                                                    ${message.message.name}
+                                                </button>
+                                            </h2>
+                                                            <div id="flush-collapse-${countmessage}" class="accordion-collapse collapse" aria-labelledby="flush-heading-${countmessage}" data-bs-parent="#accordionFlushExample">
+                                                <div class="accordion-body">
+                                                    <p>Tel:  ${message.message.tel}</p>
+                                                    <p> ${message.message.comments}</p>
+                                                </div>
+                                            </div>
+                                        </div>`
+                    let oldText = messages.innerHTML;
+                    messages.innerHTML = `${text}${oldText}`;
+                }
+            }
+        });
+        hubConnection.start();
+
+        $('#send-form').on('click', function () {
+            $.ajax({
+                type: "Post",
+                url: "/Home/NewMessage",
+                data: $("#form-call").serialize(),
+                success: function (result) {
+                    if (result) {
+                        $('#call-window').slideToggle();
+                        $('#form-call label input,textarea').val('');
+                    }
+                    console.log(result);
+                }
+            })
+        });
+    </script>
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

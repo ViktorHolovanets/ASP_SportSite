@@ -1,0 +1,13 @@
+﻿@using SportSite.Models.Db
+<div class="row justify-content-evenly">
+    @foreach (var item in training)
+    {
+        <TrainingComponent item="@item" OnCallback="@OnClickCallback" />
+    }
+</div>
+@code {
+    [Parameter]
+    public IEnumerable<Training> training { get; set; }
+    [Parameter]
+    public EventCallback<Guid> OnClickCallback { get; set; }
+}

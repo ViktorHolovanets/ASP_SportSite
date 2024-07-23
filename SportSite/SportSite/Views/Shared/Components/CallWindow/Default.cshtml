@@ -1,0 +1,23 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div id="call-window" class="position-fixed col-12 col-sm-12 col-md-9 col-lg-4 col-xl-3 col-xxl-3 mx-md-auto">
+    <form id="form-call" method="post" onsubmit="return false">
+        <label>
+            Name:<br />
+            <input type="text" name="Name" pattern="[A-Za-z]{3,}" id="name-user"/>
+        </label>
+        <label>
+            Tel:<br />
+            <input type="tel" name="tel" pattern="^[380][0-9]{9}$" placeholder="380*********" id="tel-user" />
+        </label>
+        <label>
+            Comments:<br />
+            <textarea name="comments" id="comment-user"></textarea>
+        </label>
+        <input type="submit" value="Send" id="send-form" class="btn btn-success"/>
+        <input type="button" value="Close" id="close-form" class="btn btn-danger"/>
+    </form>
+</div>

@@ -1,0 +1,28 @@
+﻿@model IEnumerable<SportSite.Models.Db.CreateCodeAccounts>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                <button data-url='@Url.Action("CreateCode")' class="btn btn-outline-success" onclick="DeleteCode(event)">Create code</button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    <button data-url='@Url.Action("DeleteCode", new{id=item.Id})' class="btn btn-outline-danger" onclick="DeleteCode(event)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

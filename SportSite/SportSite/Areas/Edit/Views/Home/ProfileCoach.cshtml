@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Training>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-3 bg-light text-black p-2 trainings">
+            <div class="view-traing">
+                @item.training<hr />
+                @foreach (var day in item.dayofWeeks)
+                {
+                    <p>@day.dayofWeek @day.Time</p>
+                }
+            </div>
+            <div class="view-clients d-none">
+                <h3>Clients</h3>
+                <hr>
+                @if (item.Clients.Count()>0)
+                {
+                    <ul>
+                        @foreach (var client in item.Clients)
+                        {
+                            <li>@client.Account.Client!.Name @client.Account.Client!.Surname</li>
+                        }
+                    </ul>
+                }
+                else{
+                    <p>The customer list is empty</p>
+                }
+
+            </div>
+        </div>
+    }
+</div>

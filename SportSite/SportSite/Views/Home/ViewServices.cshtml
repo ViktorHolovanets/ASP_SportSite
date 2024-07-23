@@ -1,0 +1,58 @@
+﻿@using SportSite.Models.Db
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@functions {
+    int n = 0;
+    public string Iteration_N()
+    {
+        n++;
+        return n.ToString();
+    }
+}
+@model IEnumerable<Services>
+@if (Model.Count() > 0)
+{
+    <div class="row d-flex d-md-none d-sm-none d-lg-flex d-xl-flex d-xxl-flex justify-content-between">
+        @foreach (var item in Model)
+        {
+            <div class="card col-12 col-lg-6 col-xl-5 col-xxl-5 mx-md-auto m-xl-2 m-lg-0 mt-5">
+                <a asp-area="" asp-controller="Home" asp-action="ViewServicesDetails" asp-route-id="@item.Id">
+                    <img class="card-img-top" src="@item.Image" alt="Card image">
+                    <div class="card-img-overlay">
+                        <h2 class="text-purple text-end font-weight-bold">@item.Name</h2>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+    <!-- контейнер з ідентифікатором slides -->
+    <div id="slides" class="carousel slide d-none d-md-block d-sm-block d-lg-none d-xl-none d-xxl-none" data-ride="carousel" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @foreach (var item in Model)
+            {
+                <div class="carousel-item @(n==0?"active":"") @Iteration_N()">
+                    <a asp-area="" asp-controller="Home" asp-action="ViewServicesDetails" asp-route-id="@item.Id">
+                        <img src="@item.Image" class="d-block w-100" alt="sea">
+                        <div class="carousel-caption">
+                            <h2 class="text-purple font-weight-bold">@item.Name</h2>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+        <!-- елементи керування - стрілки -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#slides" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#slides" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}
+else
+{
+    <p>Not content</p>
+}
